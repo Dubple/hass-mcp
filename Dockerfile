@@ -28,7 +28,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app/python_server
 
 # Annoying pip prompt, this is a docker container stupid
-RUN python3 -m pip config set global.break-system-packages true
+RUN uv pip config set global.break-system-packages true
 
 # Install your Python package with UV
 RUN uv pip install --system -e .
