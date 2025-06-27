@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv, as your original Dockerfile used it
-RUN pip install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # --- Copy and set up your Python MCP server ---
 # Create a specific subdirectory for your Python server code
