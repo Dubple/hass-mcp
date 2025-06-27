@@ -53,6 +53,8 @@ RUN npm install
 RUN npm run build
 RUN npm link
 
+WORKDIR /app
+
 # RUN npm install -g https://github.com/Dubple/mcp-proxy
 
 # --- Configure and Run the Proxy ---
