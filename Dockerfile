@@ -36,10 +36,10 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app/python_server
 
 # Annoying pip prompt, this is a docker container stupid
-#RUN mv "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED" "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED.old"
+# RUN mv "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED" "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED.old"
 
 # Install your Python package with UV
-RUN uv pip install --system -e .
+RUN uv sync
 
 # --- Install mcp-proxy ---
 # Change back to the main app directory for mcp-proxy installation
