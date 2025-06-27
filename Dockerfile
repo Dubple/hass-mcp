@@ -19,6 +19,9 @@ RUN uv pip install --system -e .
 # which is typically already in the PATH for this base image.
 RUN uv tool install mcp-proxy
 
+# Fix for not finding mcp-proxy
+ENV PATH="/root/.uv/bin:${PATH}"
+
 # EXPOSE the port that mcp-proxy will listen on for SSE connections
 # You can choose any available port, 8080 is common.
 EXPOSE 8080
