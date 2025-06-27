@@ -1,6 +1,6 @@
 # Stage 1: Base image with Node.js (for mcp-proxy)
 # We start with a Node.js image as it will be the primary process (the proxy)
-FROM node:20-bookworm-slim
+FROM node:20-bookworm
 
 # Set working directory for the overall application
 WORKDIR /app
