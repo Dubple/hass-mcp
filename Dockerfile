@@ -1,40 +1,52 @@
-# Use the same base image as your original server, which already includes uv
-FROM ghcr.io/astral-sh/uv:0.6.6-python3.13-bookworm
+# Stage 1: Base image with Node.js (for mcp-proxy)
+# We start with a Node.js image as it will be the primary process (the proxy)
+FROM node:20-bookworm-slim
 
-# Set working directory
+# Set working directory for the overall application
 WORKDIR /app
 
-# Copy project files
+# --- Install Python and its dependencies ---
+# Install Python3, pip, and other necessary build tools if your Python app needs them
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    # Add any other Python runtime dependencies if your server needs them, e.g., build-essential, git
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv, as your original Dockerfile used it
+RUN pip install uv
+
+# --- Copy and set up your Python MCP server ---
+# Create a specific subdirectory for your Python server code
+WORKDIR /app/python_server
 COPY . .
 
-# Set environment for MCP communication (kept from your original)
+# Set environment for MCP communication for the Python server
+# PYTHONUNBUFFERED is CRUCIAL for stdio communication to work correctly
 ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app/python_server
 
-# Install your stdio MCP server (kept from your original)
+# Install your Python package with UV
 RUN uv pip install --system -e .
 
-# Install mcp-proxy using uv tool install
-# This will install mcp-proxy into uv's managed tool directory,
-# which is typically already in the PATH for this base image.
-RUN uv tool install mcp-proxy
+# --- Install mcp-proxy ---
+# Change back to the main app directory for mcp-proxy installation
+WORKDIR /app
 
-# Fix for not finding mcp-proxy
-ENV PATH="/root/.local/bin:${PATH}"
+# Install mcp-proxy globally using npm
+RUN npm install -g mcp-proxy
 
-# EXPOSE the port that mcp-proxy will listen on for SSE connections
-# You can choose any available port, 8080 is common.
+# --- Configure and Run the Proxy ---
+# Expose the port mcp-proxy will listen on (default is 8080)
 EXPOSE 8080
 
-# Set the ENTRYPOINT to mcp-proxy
-# The mcp-proxy will now be the main process running in the container.
-ENTRYPOINT ["mcp-proxy"]
+# Command to run mcp-proxy, which then spawns your Python MCP server
+# npx mcp-proxy: Executes the proxy.
+# --port 8080: Sets the port the proxy listens on.
+# --shell "python3 -m app": This is the key part. It tells mcp-proxy to execute
+#                            "python3 -m app" (your Python MCP server's entrypoint)
+#                            and communicate with it over standard I/O (stdio).
+ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--shell", "python3 -m app"]
 
-# Define the default command for mcp-proxy
-# This tells mcp-proxy to run in "SSE to stdio" mode.
-# --host 0.0.0.0 makes the SSE server accessible from outside the container.
-# --port 8080 is the port mcp-proxy will listen on.
-# The -- separator is CRUCIAL: it tells mcp-proxy that all subsequent arguments
-# belong to the stdio server it needs to spawn.
-# "python", "-m", "app" is the command to run your original stdio server.
-CMD ["--host", "0.0.0.0", "--port", "8080", "--stateless", "--allow-origin='*'", "--", "python", "-m", "app"]
+# You can add --debug to the ENTRYPOINT for more verbose logging during development:
+# ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--debug", "--shell", "python3 -m app"]
