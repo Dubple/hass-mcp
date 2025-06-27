@@ -8,7 +8,7 @@ WORKDIR /app
 # --- Install Python and its dependencies ---
 # Install Python3, pip, and other necessary build tools if your Python app needs them
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 \
+    python3.13 \
     python3-pip \
     # Add any other Python runtime dependencies if your server needs them, e.g., build-essential, git
     && rm -rf /var/lib/apt/lists/*
