@@ -1,6 +1,6 @@
 # Stage 1: Base image with Node.js (for mcp-proxy)
 # We start with a Node.js image as it will be the primary process (the proxy)
-FROM node:20-bookworm
+FROM node:20-bookworm-slim
 
 # Set working directory for the overall application
 WORKDIR /app
@@ -8,14 +8,22 @@ WORKDIR /app
 # --- Install Python and its dependencies ---
 # Install Python3, pip, and other necessary build tools if your Python app needs them
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.13-full \
-    python3-pip \
+    wget \
     # Add any other Python runtime dependencies if your server needs them, e.g., build-essential, git
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv, as your original Dockerfile used it
 RUN wget -qO- https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.local/bin:${PATH}"
+
+# --- Install Python with uv ---
+# Specify the desired Python version (e.g., 3.13)
+ARG PYTHON_VERSION=3.13
+RUN uv python install ${PYTHON_VERSION}
+
+# Ensure the uv-managed Python is used by setting the PATH
+# uv installs Python to ~/.cache/uv/python/cpython-<version>-<platform>/bin
+ENV PATH="/root/.cache/uv/python/cpython-${PYTHON_VERSION}-linux-x86_64/bin:${PATH}"
 
 # --- Copy and set up your Python MCP server ---
 # Create a specific subdirectory for your Python server code
@@ -28,7 +36,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app/python_server
 
 # Annoying pip prompt, this is a docker container stupid
-RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old
+RUN mv "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED" "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED.old"
 
 # Install your Python package with UV
 RUN uv pip install --system -e .
