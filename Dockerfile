@@ -58,7 +58,7 @@ EXPOSE 8080
 # --shell "python3 -m app": This is the key part. It tells mcp-proxy to execute
 #                            "python3 -m app" (your Python MCP server's entrypoint)
 #                            and communicate with it over standard I/O (stdio).
-ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--shell", "python3 -m app"]
+# ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--shell", "python3 -m app"]
 
 # You can add --debug to the ENTRYPOINT for more verbose logging during development:
-# ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--debug", "--shell", "python3 -m app"]
+ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--debug", "--shell", "python3 -m app"]
