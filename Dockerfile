@@ -46,7 +46,7 @@ RUN uv sync
 WORKDIR /app
 
 # Install mcp-proxy globally using npm
-RUN npm install -g mcp-proxy
+RUN npm install -g https://github.com/Dubple/mcp-proxy
 
 # --- Configure and Run the Proxy ---
 # Expose the port mcp-proxy will listen on (default is 8080)
