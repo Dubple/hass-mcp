@@ -37,4 +37,4 @@ ENTRYPOINT ["mcp-proxy"]
 # The -- separator is CRUCIAL: it tells mcp-proxy that all subsequent arguments
 # belong to the stdio server it needs to spawn.
 # "python", "-m", "app" is the command to run your original stdio server.
-CMD ["--host", "0.0.0.0", "--port", "8080", "--allow-origin='*'" "--", "python", "-m", "app"]
+CMD ["--host", "0.0.0.0", "--port", "8080", "--allow-origin='*'", "--", "python", "-m", "app"]
