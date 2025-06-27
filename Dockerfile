@@ -61,4 +61,4 @@ EXPOSE 8080
 # ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--shell", "python3 -m app"]
 
 # You can add --debug to the ENTRYPOINT for more verbose logging during development:
-ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--debug", "--shell", "python3", "-m", "app"]
+ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--host", "0.0.0.0", "--debug", "--shell", "python3", "-m", "app"]
