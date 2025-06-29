@@ -41,7 +41,7 @@ RUN uv sync --all-groups
 # Annoying pip prompt, this is a docker container stupid
 RUN mv "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED" "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED.old"
 
-RUN uv pip install --system httpx
+#RUN uv pip install --system httpx
 
 # --- Install mcp-proxy ---
 # Change back to the main app directory for mcp-proxy installation
@@ -72,4 +72,4 @@ ENV MESSAGE_PATH=/message
 ENV HEALTH_PATH=/health
 
 # You can add --debug to the ENTRYPOINT for more verbose logging during development:
-CMD supergateway --stdio "python3 -m app" --port ${PORT} --ssePath ${SSE_PATH} --messagePath ${MESSAGE_PATH} --healthEndpoint ${HEALTH_PATH} --cors
+CMD supergateway --stdio "uv run python -m app" --port ${PORT} --ssePath ${SSE_PATH} --messagePath ${MESSAGE_PATH} --healthEndpoint ${HEALTH_PATH} --cors
