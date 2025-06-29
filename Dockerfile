@@ -18,7 +18,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 
 # --- Install Python with uv ---
 # Specify the desired Python version (e.g., 3.13)
-ARG PYTHON_VERSION=3.13
+ARG PYTHON_VERSION=3.11
 RUN uv python install ${PYTHON_VERSION}
 
 # Ensure the uv-managed Python is used by setting the PATH
