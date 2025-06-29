@@ -25,9 +25,6 @@ RUN uv python install ${PYTHON_VERSION}
 # uv installs Python to ~/.cache/uv/python/cpython-<version>-<platform>/bin
 ENV PATH="/root/.cache/uv/python/cpython-${PYTHON_VERSION}-linux-x86_64/bin:${PATH}"
 
-# Install your Python package with UV
-RUN uv sync --all-groups
-
 # --- Copy and set up your Python MCP server ---
 # Create a specific subdirectory for your Python server code
 WORKDIR /app/python_server
