@@ -38,7 +38,7 @@ ENV PYTHONPATH=/app/python_server
 # Annoying pip prompt, this is a docker container stupid
 #RUN mv "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED" "/usr/lib/python${PYTHON_VERSION}/EXTERNALLY-MANAGED.old"
 
-RUN uv pip install httpx
+RUN uv pip install --system httpx
 
 # Install your Python package with UV
 RUN uv sync
