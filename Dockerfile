@@ -45,13 +45,8 @@ RUN uv sync
 # Change back to the main app directory for mcp-proxy installation
 WORKDIR /app
 
-# Install mcp-proxy globally using npm
-RUN git clone https://github.com/Dubple/mcp-proxy.git
-WORKDIR /app/mcp-proxy
-
-RUN npm install
-RUN npm run build
-RUN npm link
+# Install SuperGateway
+RUN npm install -g supergateway
 
 WORKDIR /app
 
@@ -69,5 +64,10 @@ EXPOSE 8080
 #                            and communicate with it over standard I/O (stdio).
 # ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--shell", "python3 -m app"]
 
+ENV PORT=80
+ENV SSE_PATH=/sse
+ENV MESSAGE_PATH=/message
+ENV HEALTH_PATH=/health
+
 # You can add --debug to the ENTRYPOINT for more verbose logging during development:
-ENTRYPOINT ["npx", "mcp-proxy", "--port", "8080", "--host", "0.0.0.0", "--debug", "--shell", "python3", "-m", "app"]
+CMD supergateway --stdio "python3 -m app" --port ${PORT} --ssePath ${SSE_PATH} --messagePath ${MESSAGE_PATH} --healthEndpoint ${HEALTH_PATH} --cors
