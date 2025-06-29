@@ -72,4 +72,4 @@ ENV MESSAGE_PATH=/message
 ENV HEALTH_PATH=/health
 
 # You can add --debug to the ENTRYPOINT for more verbose logging during development:
-CMD supergateway --stdio "uv run python -m app" --port ${PORT} --ssePath ${SSE_PATH} --messagePath ${MESSAGE_PATH} --healthEndpoint ${HEALTH_PATH} --cors
+CMD supergateway --stdio "cd /app && uv run python -m app" --port ${PORT} --ssePath ${SSE_PATH} --messagePath ${MESSAGE_PATH} --healthEndpoint ${HEALTH_PATH} --cors
